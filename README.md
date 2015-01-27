@@ -14,10 +14,9 @@ import (
 
 func main() {
     b := Bucket{
-        consumed: 32,
-        capacity: 60,
-        dripInterval: 3 * time.Second,
-        perDrip: 60
+        Capacity: 60,
+        DripInterval: 3 * time.Second,
+        PerDrip: 60
     }
 
 

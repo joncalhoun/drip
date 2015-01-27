@@ -7,12 +7,13 @@ import (
 )
 
 type Bucket struct {
-	consumed, capacity int
-	dripInterval       time.Duration
-	perDrip            int
-	started            bool
-	kill               chan bool
-	m                  sync.Mutex
+	Capacity     int
+	DripInterval time.Duration
+	PerDrip      int
+	consumed     int
+	started      bool
+	kill         chan bool
+	m            sync.Mutex
 }
 
 func (b *Bucket) Start() error {
@@ -20,7 +21,7 @@ func (b *Bucket) Start() error {
 		return errors.New("Bucket was already started.")
 	}
 
-	ticker := time.NewTicker(b.dripInterval)
+	ticker := time.NewTicker(b.DripInterval)
 	b.started = true
 	b.kill = make(chan bool, 1)
 
@@ -29,7 +30,7 @@ func (b *Bucket) Start() error {
 			select {
 			case <-ticker.C:
 				b.m.Lock()
-				b.consumed -= b.perDrip
+				b.consumed -= b.PerDrip
 				if b.consumed < 0 {
 					b.consumed = 0
 				}
@@ -57,7 +58,7 @@ func (b *Bucket) Consume(amt int) error {
 	b.m.Lock()
 	defer b.m.Unlock()
 
-	if b.capacity-b.consumed < amt {
+	if b.Capacity-b.consumed < amt {
 		return errors.New("Not enough capacity.")
 	}
 	b.consumed += amt
