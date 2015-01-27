@@ -2,7 +2,6 @@ package drip
 
 import (
 	"errors"
-	"log"
 	"sync"
 	"time"
 )
